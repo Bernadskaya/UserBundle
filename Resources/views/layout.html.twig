@@ -1,0 +1,80 @@
+{#{% extends 'SonataAdminBundle::standard_layout.html.twig' %}#}
+ {% block sonata_nav_menu %}
+     <div class="collapse navbar-collapse" id="nav-collapse">
+         {% block top_bar_before_nav %}
+         {% endblock %}
+         {% block sonata_top_bar_nav %}
+
+             {% if is_granted('ROLE_USER') %}
+                 {{ knp_menu_render('AntBundle:BackendBuilder:mainMenu') }}
+
+                 {% for group in admin_pool.dashboardgroups %}
+                     {% set display = (group.roles is empty or is_granted('ROLE_USER') ) %}
+                     {% for role in group.roles if not display %}
+                         {% set display = is_granted(role) %}
+                     {% endfor %}
+
+                     {# Do not display the group label if no item in group is available #}
+                     {% set item_count = 0 %}
+                     {% if display %}
+                         {% for admin in group.items if item_count == 0 %}
+                             {% if admin.hasroute('list') and admin.isGranted('LIST') %}
+                                 {% set item_count = item_count+1 %}
+                             {% endif %}
+                         {% endfor %}
+                     {% endif %}
+
+                     {% if display and (item_count > 0) %}
+                         <li class="dropdown">
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ group.label|trans({}, group.label_catalogue) }} <span class="caret"></span></a>
+                             <ul class="dropdown-menu">
+                                 {% for admin in group.items %}
+                                     {% if admin.hasroute('list') and admin.isGranted('LIST') %}
+                                         <li><a href="{{ admin.generateUrl('list')}}">{{ admin.label|trans({}, admin.translationdomain) }}</a></li>
+                                     {% endif %}
+                                 {% endfor %}
+                             </ul>
+                         </li>
+                     {% endif %}
+                 {% endfor %}
+             {% endif %}
+         {% endblock %}
+         {% block top_bar_after_nav %} {% endblock %}
+         {% block sonata_top_bar_search %}
+             {% if app.security.token and is_granted('ROLE_USER') %}
+                 <form action="{{ url('sonata_admin_search') }}" method="GET"  class="navbar-search">
+                     <div class="input-append">
+                         <input type="text" name="q" value="{{ app.request.get('q') }}" class="input-large search-query" placeholder="{{ 'search_placeholder'|trans({}, 'SonataAdminBundle') }}"/>
+                     </div>
+                 </form>
+             {% endif %}
+         {% endblock %}
+
+     </div>
+ {% endblock %}
+{% block sonata_page_content %}
+        <div>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+               <h3> {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
+                <a href="{{ path('fos_user_security_logout') }}">
+                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                </a>
+               </h3>
+            {% else %}
+                <h3><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'AntBundle') }}</a></h3>
+            {% endif %}
+        </div>
+
+        {% for type, messages in app.session.flashbag.all() %}
+            {% for message in messages %}
+                <div class="flash-{{ type }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div>
+            {% block fos_user_content %}
+            {% endblock fos_user_content %}
+        </div>
+{% endblock %}
