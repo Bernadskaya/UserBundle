@@ -6,7 +6,7 @@
          {% block sonata_top_bar_nav %}
 
              {% if is_granted('ROLE_USER') %}
-                 {{ knp_menu_render('AntBundle:BackendBuilder:mainMenu') }}
+                 {{ knp_menu_render('AntWebBundle:BackendBuilder:mainMenu') }}
 
                  {% for group in admin_pool.dashboardgroups %}
                      {% set display = (group.roles is empty or is_granted('ROLE_USER') ) %}
@@ -61,7 +61,7 @@
                 </a>
                </h3>
             {% else %}
-                <h3><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'AntBundle') }}</a></h3>
+                <h3><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'AntWebBundle') }}</a></h3>
             {% endif %}
         </div>
 
