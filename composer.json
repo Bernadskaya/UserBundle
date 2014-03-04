@@ -34,7 +34,6 @@
     "autoload": {
         "psr-0": { "Ant\\UserBundle": "" }
     },
-    "target-dir": "Ant/UserBundle",
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
