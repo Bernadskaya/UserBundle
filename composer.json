@@ -32,8 +32,9 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-4": { "Ant\\UserBundle\\": "" }
+        "psr-0": { "Ant\\UserBundle": "" }
     },
+    "target-dir": "Ant/UserBundle",
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
